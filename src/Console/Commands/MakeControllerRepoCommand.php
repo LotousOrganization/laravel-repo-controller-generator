@@ -61,6 +61,13 @@ class MakeControllerRepoCommand extends Command
 
     public function addRequestFiles($model , $path)
     {
+        $modelClass = "App\\Models\\$model";
+
+        if (!class_exists($modelClass)) {
+            $this->error("Model '$model' not found at $modelClass.");
+            return;
+        }
+        
         $requestPaths = [
             'create'  => app_path('Http/Requests'.$path.$model.'/' . str_replace('\\', '/', 'Store'.$model.'Request') . '.php'),
             'update'  => app_path('Http/Requests'.$path.$model.'/' . str_replace('\\', '/', 'Update'.$model.'Request') . '.php'),
