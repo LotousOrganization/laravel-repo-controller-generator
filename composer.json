@@ -4,7 +4,6 @@
     "type": "library",
     "require": {
         "illuminate/support": "*",
-        // "lotous-organization/laravel-filter": "dev-master"
     },
     "license": "MIT",
     "autoload": {
