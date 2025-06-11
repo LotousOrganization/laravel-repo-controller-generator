@@ -1,0 +1,38 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Models\{{ modelBasename }};
+
+class {{ class }}
+{
+    public function getAll($request)
+    {
+        ${{ modelVariable }}s = {{ modelBasename }}::query()
+            ->filter($request)
+            ->paginate();
+
+        return ${{ modelVariable }}s;
+    }
+
+    public function create($request) : void
+    {
+        {{ modelBasename }}::create($request->validated());
+
+        return;
+    }
+
+    public function update($request , {{ modelBasename }} ${{ modelVariable }}) : void
+    {
+        ${{ modelVariable }}->update($request->validated());
+
+        return;
+    }
+
+    public function delete({{ modelBasename }} ${{ modelVariable }}) : void
+    {
+        ${{ modelVariable }}->delete();
+
+        return;
+    }
+}

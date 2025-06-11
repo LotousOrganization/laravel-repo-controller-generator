@@ -1,0 +1,64 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Http\Controllers\Controller;
+use App\Models\{{ model }};
+use Illuminate\Http\Request;
+use Responses\ApiResponse;
+use App\Repositories\Eloquent\{{ model }}Repository;
+use App\Http\Request{{ path }}{{ model }}\Store{{ model }}Request;
+use App\Http\Request{{ path }}{{ model }}\Update{{ model }}Request;
+
+class {{ controller }} extends Controller
+{
+    public function __construct(public {{ model }}Repository $repo){}
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        ${{ modelVariable }}s = $this->repo->getAll($request);
+
+        return ApiResponse::success(${{ modelVariable }}s);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Store{{ model }}Request $request)
+    {
+        $this->repo->create($request);
+
+        return ApiResponse::success();
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show({{ model }} ${{ modelVariable }})
+    {
+        return ApiResponse::success(${{ modelVariable }});
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Update{{ model }}Request $request, {{ model }} ${{ modelVariable }})
+    {
+        $this->repo->update($request , ${{ modelVariable }});
+
+        return ApiResponse::success();
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy({{ model }} ${{ modelVariable }})
+    {
+        $this->repo->delete(${{ modelVariable }});
+
+        return ApiResponse::success();
+    }
+}

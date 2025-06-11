@@ -1,0 +1,31 @@
+{
+    "name": "sobhan-aali/laravel-repo-controller-generator",
+    "description": "Generate controller, repository and request files.",
+    "type": "library",
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^11.0",
+        "lotous-organization/laravel-filter": "dev-master"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "SobhanAali\\LaravelRepoControllerGenerator\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+        "providers": [
+                "YourName\\RepoControllerGenerator\\RepoControllerGeneratorServiceProvider"
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name": "Sobhan Aali",
+            "email": "sobhanaali80@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
