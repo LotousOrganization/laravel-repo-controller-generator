@@ -39,6 +39,8 @@ class MakeControllerRepoCommand extends Command
         $stubPath = base_path('stubs/controller.repo.stub');
         $stub = file_get_contents($stubPath);
 
+        $path = str_replace('/' , '\\' , $path);
+
         $replacements = [
             '{{ namespace }}'     => $namespace,
             '{{ controller }}'    => $className,
