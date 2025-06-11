@@ -4,8 +4,8 @@
     "type": "library",
     "require": {
         "php": "^8.0",
-        "illuminate/support": "^11.0",
-        "lotous-organization/laravel-filter": "dev-master"
+        "illuminate/support": "*",
+        "lotous-organization/laravel-filter": "*"
     },
     "license": "MIT",
     "autoload": {
