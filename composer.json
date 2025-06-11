@@ -3,7 +3,7 @@
     "description": "Generate controller, repository and request files.",
     "type": "library",
     "require": {
-        "illuminate/support": "*",
+        "illuminate/support": "*"
     },
     "license": "MIT",
     "autoload": {
