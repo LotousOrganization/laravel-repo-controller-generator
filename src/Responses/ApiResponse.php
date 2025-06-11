@@ -1,6 +1,6 @@
 <?php
 
-namespace Responses;
+namespace SobhanAali\Responses;
 
 class ApiResponse
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Traits;
+namespace SobhanAali\Traits;
 
 use Illuminate\Contracts\Database\Eloquent\Builder;
 

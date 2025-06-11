@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace SobhanAali\RepoControllerGenerator\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
