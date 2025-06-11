@@ -8,9 +8,7 @@ class {{ class }}
 {
     public function getAll($request)
     {
-        ${{ modelVariable }}s = {{ modelBasename }}::query()
-            ->filter($request)
-            ->paginate();
+        ${{ modelVariable }}s = {{ modelBasename }}::all();
 
         return ${{ modelVariable }}s;
     }
