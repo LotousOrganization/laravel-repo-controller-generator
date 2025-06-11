@@ -1,6 +1,6 @@
 <?php
 
-namespace SobhanAali\RepoControllerGenerator\Console\Commands;
+namespace SobhanAali\LaravelRepoControllerGenerator\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 use Symfony\Component\Console\Input\InputOption;

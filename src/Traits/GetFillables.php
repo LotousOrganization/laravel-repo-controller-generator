@@ -1,6 +1,6 @@
 <?php
 
-namespace SobhanAali\Traits;
+namespace SobhanAali\LaravelRepoControllerGenerator\Traits;
 
 use Illuminate\Contracts\Database\Eloquent\Builder;
 

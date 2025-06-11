@@ -1,6 +1,6 @@
 <?php
 
-namespace SobhanAali\Responses;
+namespace SobhanAali\LaravelRepoControllerGenerator\Responses;
 
 class ApiResponse
 {
