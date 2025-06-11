@@ -1,6 +1,6 @@
 <?php
 
-namespace YourName\RepoControllerGenerator;
+namespace SobhanAali\RepoControllerGenerator;
 
 use Illuminate\Support\ServiceProvider;
 use YourName\RepoControllerGenerator\Console\MakeControllerRepoCommand;
