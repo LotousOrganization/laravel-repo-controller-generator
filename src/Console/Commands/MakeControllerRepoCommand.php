@@ -67,10 +67,12 @@ class MakeControllerRepoCommand extends Command
             $this->error("Model '$model' not found at $modelClass.");
             return;
         }
-        
+
+        $path = str_replace('/' , '\\' , $path);
+
         $requestPaths = [
-            'create'  => app_path('Http/Requests'.$path.$model.'/' . str_replace('\\', '/', 'Store'.$model.'Request') . '.php'),
-            'update'  => app_path('Http/Requests'.$path.$model.'/' . str_replace('\\', '/', 'Update'.$model.'Request') . '.php'),
+            'create'  => app_path('Http/Requests'.$path.$model.'\\' . str_replace('\\', '/', 'Store'.$model.'Request') . '.php'),
+            'update'  => app_path('Http/Requests'.$path.$model.'\\' . str_replace('\\', '/', 'Update'.$model.'Request') . '.php'),
         ];
 
         $stubPath = base_path('stubs/request.stub');
