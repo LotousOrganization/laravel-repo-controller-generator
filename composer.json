@@ -14,7 +14,7 @@
     "extra": {
         "laravel": {
         "providers": [
-                "SobhanAali\\RepoControllerGenerator\\RepoControllerGeneratorServiceProvider"
+                "SobhanAali\\LaravelRepoControllerGenerator\\RepoControllerGeneratorServiceProvider"
             ]
         }
     },

@@ -1,6 +1,6 @@
 <?php
 
-namespace SobhanAali\RepoControllerGenerator;
+namespace SobhanAali\LaravelRepoControllerGenerator;
 
 use Illuminate\Support\ServiceProvider;
 use YourName\RepoControllerGenerator\Console\MakeControllerRepoCommand;
