@@ -18,7 +18,7 @@ class RepoControllerGeneratorServiceProvider extends ServiceProvider
             // Publish stubs
             $this->publishes([
                 __DIR__.'/stubs' => base_path('stubs'),
-            ], 'repo-controller-stubs');0
+            ], 'repo-controller-stubs');
         }
     }
 
