@@ -3,7 +3,6 @@
     "description": "Generate controller, repository and request files.",
     "type": "library",
     "require": {
-        "php": "^8.0",
         "illuminate/support": "*",
         "lotous-organization/laravel-filter": "*"
     },
