@@ -107,7 +107,7 @@ class MakeControllerRepoCommand extends Command
     {
         $namespace = 'App\Repositories\Eloquent';
 
-        $path = app_path('Repositories/Eloquent/' . str_replace('\\', '/', $model.'Repository') . '.php');
+        $path = app_path('Repositories/' . str_replace('\\', '/', 'Eloquent/'.$model.'Repository') . '.php');
 
         $stubPath = base_path('stubs/repository.stub');
 
