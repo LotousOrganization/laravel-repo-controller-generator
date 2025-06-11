@@ -3,7 +3,7 @@
 namespace SobhanAali\LaravelRepoControllerGenerator;
 
 use Illuminate\Support\ServiceProvider;
-use SobhanAali\RepoControllerGenerator\Console\MakeControllerRepoCommand;
+use SobhanAali\RepoControllerGenerator\Console\Commands\MakeControllerRepoCommand;
 
 class RepoControllerGeneratorServiceProvider extends ServiceProvider
 {
