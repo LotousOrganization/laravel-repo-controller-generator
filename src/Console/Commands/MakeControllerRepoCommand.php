@@ -73,14 +73,14 @@ class MakeControllerRepoCommand extends Command
         }        
 
         $requestPaths = [
-            'create' => app_path("Http/Requests{$path}{$model}/Store{$model}Request.php"),
-            'update' => app_path("Http/Requests{$path}{$model}/Update{$model}Request.php"),
+            'Store'   => app_path("Http/Requests/{$path}{$model}/Store{$model}Request.php"),
+            'Update'  => app_path("Http/Requests/{$path}{$model}/Update{$model}Request.php"),
         ];        
 
         $stubPath = base_path('stubs/request.stub');
 
         $namespacePath = trim(str_replace('/', '\\', $path), '\\');
-        $namespace = "App\\Http\\Requests\\{$namespacePath}{$model}";
+        $namespace = "App\\Http\\Requests\\{$namespacePath}\\{$model}";
 
         $modelInstance = app("App\Models\\$model");
         $fillables = $modelInstance->getFillable();
@@ -99,8 +99,8 @@ class MakeControllerRepoCommand extends Command
             $stub = file_get_contents($stubPath);
 
             $replacements = [
-                '{{ namespace }}'    => $namespace,
-                '{{ class }}'        => $model.$key.'Request',
+                '{{ namespace }}'     => $namespace,
+                '{{ class }}'         => $key.$model.'Request',
                 '{{ rules }}'         => $rulesString
             ];
 

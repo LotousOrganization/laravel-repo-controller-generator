@@ -7,8 +7,8 @@ use App\Models\{{ model }};
 use Illuminate\Http\Request;
 use SobhanAali\LaravelRepoControllerGenerator\ApiResponse;
 use App\Repositories\Eloquent\{{ model }}Repository;
-use App\Http\Request{{ path }}{{ model }}\Store{{ model }}Request;
-use App\Http\Request{{ path }}{{ model }}\Update{{ model }}Request;
+use App\Http\Requests\{{ path }}{{ model }}\Store{{ model }}Request;
+use App\Http\Requests\{{ path }}{{ model }}\Update{{ model }}Request;
 
 class {{ controller }} extends Controller
 {
