@@ -5,7 +5,7 @@ namespace {{ namespace }};
 use App\Http\Controllers\Controller;
 use App\Models\{{ model }};
 use Illuminate\Http\Request;
-use SobhanAali\LaravelRepoControllerGenerator\ApiResponse;
+use App\Responses\ApiResponse;
 use App\Repositories\Eloquent\{{ model }}Repository;
 use App\Http\Requests\{{ path }}{{ model }}\Store{{ model }}Request;
 use App\Http\Requests\{{ path }}{{ model }}\Update{{ model }}Request;
