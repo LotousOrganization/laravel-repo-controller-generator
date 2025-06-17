@@ -13,6 +13,8 @@ class MakeControllerRepoCommand extends Command
 
     public function handle()
     {
+        $this->checkStubs();
+
         $name = $this->argument('name');
 
         $controllerPath = app_path('Http/Controllers/' . str_replace('\\', '/', $name) . '.php');
@@ -166,4 +168,36 @@ class MakeControllerRepoCommand extends Command
     {
         return Str::after($path, base_path() . DIRECTORY_SEPARATOR);
     }
+
+    public function checkStubs()
+    {
+        $missing = [];
+
+        if (! file_exists(base_path('stubs/request.stub'))) {
+            $missing[] = 'stubs/request.stub';
+        }
+
+        if (! file_exists(base_path('stubs/controller.repo.stub'))) {
+            $missing[] = 'stubs/controller.repo.stub';
+        }
+
+        if (! file_exists(base_path('stubs/repository.stub'))) {
+            $missing[] = 'stubs/repository.stub';
+        }
+
+        if (! empty($missing)) {
+            $this->error("❌  Required stub files are missing:\n");
+
+            foreach ($missing as $stub) {
+                $this->line("   - {$stub}");
+            }
+
+            $this->line("\n📦  Before you start, please publish the stub files using the command below:\n");
+            $this->line("   php artisan vendor:publish --tag=repo-controller-stubs");
+            $this->line('');
+
+            exit(1);
+        }
+    }
+
 }
