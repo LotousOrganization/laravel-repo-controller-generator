@@ -23,15 +23,9 @@ class MakeControllerRepoCommand extends Command
 
         $model = Str::replaceLast('Controller', '', $className);
         
-        $path = '';
+        $filtered = array_filter($pathParts, fn($p) => !in_array($p, ['Api', 'V1']));
+        $path = implode('/', $filtered) . '/';
 
-        for($i = 0 ; $i < count($pathParts); $i++){
-            if($pathParts[$i] != 'Api' && $pathParts[$i] != 'V1'){
-                $path = $path.'/'.$pathParts[$i];
-            }
-        }
-
-        $path = $path.'/';
 
         $this->addRepository($model);
         $this->addRequestFiles($model , $path);
@@ -56,9 +50,17 @@ class MakeControllerRepoCommand extends Command
             mkdir($directory, 0755, true);
         }
 
+        if (file_exists($controllerPath)) {
+            if (! $this->confirm("⚠️\u{200A}File already exists at: {$this->pathWithoutBase($controllerPath)}. Do you want to overwrite it?", false)) {
+                $this->warn("⚠️ \u{200A}Skipped: {$this->pathWithoutBase($controllerPath)}");
+                $this->line('');
+                return;
+            }
+        }
+
         file_put_contents($controllerPath, $output);
 
-        $this->info("Controller created at: {$controllerPath}");
+        $this->info("✔️ \u{200A}Controller successfully created: {$this->pathWithoutBase($controllerPath)}");
     }
 
     public function addRequestFiles($model , $path)
@@ -66,19 +68,20 @@ class MakeControllerRepoCommand extends Command
         $modelClass = "App\\Models\\$model";
 
         if (!class_exists($modelClass)) {
-            $this->error("Model '$model' not found at $modelClass.");
+            $this->error("❌\u{200A}Model '{$model}' not found at {$modelClass}. Request classes cannot be generated without the model.");
             return;
-        }
-
-        $path = str_replace('/' , '\\' , $path);
+        }        
 
         $requestPaths = [
-            'create'  => app_path('Http/Requests'.$path.$model.'\\' . str_replace('\\', '/', 'Store'.$model.'Request') . '.php'),
-            'update'  => app_path('Http/Requests'.$path.$model.'\\' . str_replace('\\', '/', 'Update'.$model.'Request') . '.php'),
-        ];
+            'create' => app_path("Http/Requests{$path}{$model}/Store{$model}Request.php"),
+            'update' => app_path("Http/Requests{$path}{$model}/Update{$model}Request.php"),
+        ];        
 
         $stubPath = base_path('stubs/request.stub');
-        $namespace = 'App\Http\Requests\Admin\CRUD\\'.$model;
+
+        $namespacePath = trim(str_replace('/', '\\', $path), '\\');
+        $namespace = "App\\Http\\Requests\\{$namespacePath}{$model}";
+
         $modelInstance = app("App\Models\\$model");
         $fillables = $modelInstance->getFillable();
 
@@ -108,9 +111,17 @@ class MakeControllerRepoCommand extends Command
                 mkdir($directory, 0755, true);
             }
 
+            if (file_exists($path)) {
+                if (! $this->confirm("⚠️ \u{200A}File already exists at: {$this->pathWithoutBase($path)}. Do you want to overwrite it?", false)) {
+                    $this->warn("⚠️ \u{200A}Skipped request creation: {$this->pathWithoutBase($path)}");
+                    $this->line('');
+                    continue;
+                }
+            }
+
             file_put_contents($path, $output);
 
-            $this->info("Request created at: {$path}");
+            $this->info("✔️ \u{200A}Request successfully created: {$this->pathWithoutBase($path)}");
         }
     }
 
@@ -138,8 +149,21 @@ class MakeControllerRepoCommand extends Command
             mkdir($directory, 0755, true);
         }
 
+        if (file_exists($path)) {
+            if (! $this->confirm("⚠️ \u{200A}File already exists at: {$this->pathWithoutBase($path)}. Do you want to overwrite it?", false)) {
+                $this->warn("⚠️ \u{200A}Skipped repository creation: {$this->pathWithoutBase($path)}");
+                $this->line('');
+                return;
+            }
+        }
+
         file_put_contents($path, $output);
 
-        $this->info("Repository created at: {$path}");
+        $this->info("✔️ \u{200A}Repository successfully created: {$this->pathWithoutBase($path)}");
+    }
+
+    public function pathWithoutBase($path)
+    {
+        return Str::after($path, base_path() . DIRECTORY_SEPARATOR);
     }
 }
