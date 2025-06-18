@@ -84,18 +84,6 @@ class MakeControllerRepoCommand extends Command
         $namespacePath = trim(str_replace('/', '\\', $path), '\\');
         $namespace = "App\\Http\\Requests\\{$namespacePath}\\{$model}";
 
-        $modelInstance = app("App\Models\\$model");
-        $fillables = $modelInstance->getFillable();
-
-        $rules = [];
-        foreach($fillables as $key => $fillable){
-            $rules[$fillable] = [];
-        }
-        $rulesString = var_export($rules, true);
-        $rulesString = preg_replace('/\s+/', ' ', $rulesString);
-        $rulesString = str_replace(['array (', ')'], ["[", ']'], $rulesString);
-        $rulesString = str_replace(',', ",\n", $rulesString);
-        $rulesString = preg_replace('/\[\s+\]/', '[]', $rulesString);
 
         foreach($requestPaths as $key => $path){
             $stub = file_get_contents($stubPath);
@@ -103,7 +91,7 @@ class MakeControllerRepoCommand extends Command
             $replacements = [
                 '{{ namespace }}'     => $namespace,
                 '{{ class }}'         => $key.$model.'Request',
-                '{{ rules }}'         => $rulesString
+                '{{ rules }}'         => $this->getRequestRulesString($key , $model)
             ];
 
             $output = str_replace(array_keys($replacements), array_values($replacements), $stub);
@@ -199,5 +187,52 @@ class MakeControllerRepoCommand extends Command
             exit(1);
         }
     }
+
+    public function getRequestRulesString($requestKey, $model)
+    {
+        $modelInstance = app("App\Models\\$model");
+        $fillables = $modelInstance->getFillable();
+
+        $rules = [];
+
+        foreach ($fillables as $fillable) {
+
+            $isStore = $requestKey === 'Store';
+            $requiredRule = $isStore ? 'required' : 'nullable';
+        
+            if (Str::endsWith($fillable, '_id')) {
+                $baseName = Str::beforeLast($fillable, '_id');
+                $table = $baseName === 'parent' 
+                    ? Str::snake($model).'s'
+                    : Str::plural($baseName);
+        
+                $rules[$fillable] = [
+                    $requiredRule,
+                    'integer',
+                    "exists:$table,id",
+                ];
+            } else {
+                $rules[$fillable] = [
+                    $requiredRule,
+                    'string',
+                ];
+            }
+        }
+        
+
+        $ruleLines = [];
+        foreach ($rules as $field => $ruleSet) {
+            $rulesArray = empty($ruleSet)
+                ? '[]'
+                : '[\'' . implode("', '", $ruleSet) . '\']';
+
+            $ruleLines[] = "    '$field' => $rulesArray,";
+        }
+
+        $rulesString = "[\n" . implode("\n", $ruleLines) . "\n];";
+
+        return $rulesString;
+    }
+
 
 }

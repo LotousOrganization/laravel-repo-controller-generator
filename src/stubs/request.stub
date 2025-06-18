@@ -21,6 +21,6 @@ class {{ class }} extends FormRequest
      */
     public function rules(): array
     {
-        return {{ rules }};
+        return {{ rules }}
     }
 }
