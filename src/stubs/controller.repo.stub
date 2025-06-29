@@ -3,6 +3,7 @@
 namespace {{ namespace }};
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\{{ model }}\{{ model }}Resource;
 use App\Models\{{ model }};
 use Illuminate\Http\Request;
 use App\Responses\ApiResponse;
@@ -21,7 +22,7 @@ class {{ controller }} extends Controller
     {
         ${{ modelVariable }}s = $this->repo->getAll($request);
 
-        return ApiResponse::success(${{ modelVariable }}s);
+        return ApiResponse::success({{ model }}Resource::collection(${{ modelVariable }}s));
     }
 
     /**
@@ -39,7 +40,7 @@ class {{ controller }} extends Controller
      */
     public function show({{ model }} ${{ modelVariable }})
     {
-        return ApiResponse::success(${{ modelVariable }});
+        return ApiResponse::success(new {{ model }}Resource(${{ modelVariable }}));
     }
 
     /**
