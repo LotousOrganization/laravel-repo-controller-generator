@@ -4,6 +4,11 @@ namespace SobhanAali\LaravelRepoControllerGenerator\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
+use SobhanAali\LaravelRepoControllerGenerator\Console\ConsoleMessager;
+use SobhanAali\LaravelRepoControllerGenerator\Helper\Controller;
+use SobhanAali\LaravelRepoControllerGenerator\Helper\Repository;
+use SobhanAali\LaravelRepoControllerGenerator\Helper\Request;
+use SobhanAali\LaravelRepoControllerGenerator\Helper\Resource;
 
 class MakeControllerRepoCommand extends Command
 {
@@ -11,150 +16,47 @@ class MakeControllerRepoCommand extends Command
 
     protected $description = 'Create a new controller class with optional repository and requests (StoreRequest , UpdateRequest)';
 
+    protected $basePath;
+    protected $path = '';
+    protected $name;
+    protected $model;
+    
+
     public function handle()
     {
+        ConsoleMessager::setIO($this->input, $this->output);
+
         $this->checkStubs();
+
+        $this->line('');
 
         $name = $this->argument('name');
 
-        $controllerPath = app_path('Http/Controllers/' . str_replace('\\', '/', $name) . '.php');
-        
         $pathParts = explode('/', $name);
-        $className = array_pop($pathParts);
-        $namespace = 'App\\Http\\Controllers' . (count($pathParts) ? '\\' . implode('\\', $pathParts) : '');
 
-        $model = Str::replaceLast('Controller', '', $className);
+        $basePath = $pathParts[0].'/'.$pathParts[1].'/';
         
-        $filtered = array_filter($pathParts, fn($p) => !in_array($p, ['Api', 'V1']));
-        $path = implode('/', $filtered) . '/';
-
-
-        $this->addRepository($model);
-        $this->addRequestFiles($model , $path);
-
-        $stubPath = base_path('stubs/controller.repo.stub');
-        $stub = file_get_contents($stubPath);
-
-        $path = str_replace('/' , '\\' , $path);
-
-        $replacements = [
-            '{{ namespace }}'     => $namespace,
-            '{{ controller }}'    => $className,
-            '{{ model }}'         => $model,
-            '{{ modelVariable }}' => lcfirst($model),
-            '{{ path }}'          => $path
-        ];
-
-        $output = str_replace(array_keys($replacements), array_values($replacements), $stub);
-
-        $directory = dirname($controllerPath);
-        if (!is_dir($directory)) {
-            mkdir($directory, 0755, true);
+        $path = '';
+        for($i = 2; $i < count($pathParts) - 1 ; $i++){
+            $path .= $pathParts[$i].'/';
         }
 
-        if (file_exists($controllerPath)) {
-            if (! $this->confirm("⚠️\u{200A}File already exists at: {$this->pathWithoutBase($controllerPath)}. Do you want to overwrite it?", false)) {
-                $this->warn("⚠️ \u{200A}Skipped: {$this->pathWithoutBase($controllerPath)}");
-                $this->line('');
-                return;
-            }
-        }
+        $className = array_pop($pathParts);
+        $model = Str::replaceLast('Controller', '', $className);
 
-        file_put_contents($controllerPath, $output);
-
-        $this->info("✔️ \u{200A}Controller successfully created: {$this->pathWithoutBase($controllerPath)}");
-    }
-
-    public function addRequestFiles($model , $path)
-    {
         $modelClass = "App\\Models\\$model";
 
         if (!class_exists($modelClass)) {
             $this->error("❌\u{200A}Model '{$model}' not found at {$modelClass}. Request classes cannot be generated without the model.");
-            return;
-        }        
-
-        $requestPaths = [
-            'Store'   => app_path("Http/Requests/{$path}{$model}/Store{$model}Request.php"),
-            'Update'  => app_path("Http/Requests/{$path}{$model}/Update{$model}Request.php"),
-        ];        
-
-        $stubPath = base_path('stubs/request.stub');
-
-        $namespacePath = trim(str_replace('/', '\\', $path), '\\');
-        $namespace = "App\\Http\\Requests\\{$namespacePath}\\{$model}";
-
-
-        foreach($requestPaths as $key => $path){
-            $stub = file_get_contents($stubPath);
-
-            $replacements = [
-                '{{ namespace }}'     => $namespace,
-                '{{ class }}'         => $key.$model.'Request',
-                '{{ rules }}'         => $this->getRequestRulesString($key , $model)
-            ];
-
-            $output = str_replace(array_keys($replacements), array_values($replacements), $stub);
-            $directory = dirname($path);
-
-            if (!is_dir($directory)) {
-                mkdir($directory, 0755, true);
-            }
-
-            if (file_exists($path)) {
-                if (! $this->confirm("⚠️ \u{200A}File already exists at: {$this->pathWithoutBase($path)}. Do you want to overwrite it?", false)) {
-                    $this->warn("⚠️ \u{200A}Skipped request creation: {$this->pathWithoutBase($path)}");
-                    $this->line('');
-                    continue;
-                }
-            }
-
-            file_put_contents($path, $output);
-
-            $this->info("✔️ \u{200A}Request successfully created: {$this->pathWithoutBase($path)}");
-        }
-    }
-
-    public function addRepository($model)
-    {
-        $namespace = 'App\Repositories\Eloquent';
-
-        $path = app_path('Repositories/' . str_replace('\\', '/', 'Eloquent/'.$model.'Repository') . '.php');
-
-        $stubPath = base_path('stubs/repository.stub');
-
-        $stub = file_get_contents($stubPath);
-
-        $replacements = [
-            '{{ namespace }}'     => $namespace,
-            '{{ modelBasename }}' => $model,
-            '{{ modelVariable }}' => lcfirst($model),
-            '{{ class }}'         => $model.'Repository'
-        ];
-
-        $directory = dirname($path);
-
-        $output = str_replace(array_keys($replacements), array_values($replacements), $stub);
-        if (!is_dir($directory)) {
-            mkdir($directory, 0755, true);
+        } else {
+            Request::create($path , $model);
+            Resource::create($model);
         }
 
-        if (file_exists($path)) {
-            if (! $this->confirm("⚠️ \u{200A}File already exists at: {$this->pathWithoutBase($path)}. Do you want to overwrite it?", false)) {
-                $this->warn("⚠️ \u{200A}Skipped repository creation: {$this->pathWithoutBase($path)}");
-                $this->line('');
-                return;
-            }
-        }
+        Repository::create($model);
+        
+        Controller::create($className , $model , $basePath.$path , $path);
 
-        file_put_contents($path, $output);
-
-        $this->info("✔️ \u{200A}Repository successfully created: {$this->pathWithoutBase($path)}");
-    }
-
-    public function pathWithoutBase($path)
-    {
-        return Str::after($path, base_path() . DIRECTORY_SEPARATOR);
     }
 
     public function checkStubs()
@@ -173,6 +75,10 @@ class MakeControllerRepoCommand extends Command
             $missing[] = 'stubs/repository.stub';
         }
 
+        if (! file_exists(base_path('stubs/resource.stub'))) {
+            $missing[] = 'stubs/repository.stub';
+        }
+
         if (! empty($missing)) {
             $this->error("❌  Required stub files are missing:\n");
 
@@ -187,52 +93,4 @@ class MakeControllerRepoCommand extends Command
             exit(1);
         }
     }
-
-    public function getRequestRulesString($requestKey, $model)
-    {
-        $modelInstance = app("App\Models\\$model");
-        $fillables = $modelInstance->getFillable();
-
-        $rules = [];
-
-        foreach ($fillables as $fillable) {
-
-            $isStore = $requestKey === 'Store';
-            $requiredRule = $isStore ? 'required' : 'nullable';
-        
-            if (Str::endsWith($fillable, '_id')) {
-                $baseName = Str::beforeLast($fillable, '_id');
-                $table = $baseName === 'parent' 
-                    ? Str::snake($model).'s'
-                    : Str::plural($baseName);
-        
-                $rules[$fillable] = [
-                    $requiredRule,
-                    'integer',
-                    "exists:$table,id",
-                ];
-            } else {
-                $rules[$fillable] = [
-                    $requiredRule,
-                    'string',
-                ];
-            }
-        }
-        
-
-        $ruleLines = [];
-        foreach ($rules as $field => $ruleSet) {
-            $rulesArray = empty($ruleSet)
-                ? '[]'
-                : '[\'' . implode("', '", $ruleSet) . '\']';
-
-            $ruleLines[] = "    '$field' => $rulesArray,";
-        }
-
-        $rulesString = "[\n" . implode("\n", $ruleLines) . "\n];";
-
-        return $rulesString;
-    }
-
-
 }
