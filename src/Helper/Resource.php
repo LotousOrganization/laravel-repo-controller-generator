@@ -69,6 +69,8 @@ class Resource extends File
 
         $outputs = [];
 
+        $outputs['id'] = '$this->id';
+
         foreach ($fillables as $fillable) {
 
             $outputs[$fillable] = '$this->'.$fillable;
