@@ -20,7 +20,7 @@ class Resource extends File
         }
         ConsoleMessager::line('');
 
-        $stub = file_get_contents(base_path('stubs/resource.stub'));
+        $stub = file_get_contents(base_path('stubs/resource.repo.stub'));
 
         $responsePaths = [
             'Admin'   => app_path("Http/Resources/{$model}/Admin{$model}Resource.php"),
@@ -76,6 +76,9 @@ class Resource extends File
             $outputs[$fillable] = '$this->'.$fillable;
             
         }
+
+        $outputs['created_at'] = '$this->created_at';
+        $outputs['updated_at'] = '$this->updated_at';
         
         $outputLines = [];
         foreach ($outputs as $key => $value) {

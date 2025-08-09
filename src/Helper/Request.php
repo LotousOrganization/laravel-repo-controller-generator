@@ -13,7 +13,14 @@ class Request extends File
      */
     public static function create($path , $model)
     {
-        $stub = file_get_contents(base_path('stubs/request.stub'));
+        if (! ConsoleMessager::confirm("📦 Do you want to generate requests for the model '{$model}'?", false)) {
+            ConsoleMessager::warn("⛔ Request generation for model '{$model}' was cancelled.");
+            ConsoleMessager::line('');
+            return;
+        }
+        ConsoleMessager::line('');
+
+        $stub = file_get_contents(base_path('stubs/request.repo.stub'));
 
         $requestPaths = [
             'Store'   => app_path("Http/Requests/{$path}{$model}/Store{$model}Request.php"),

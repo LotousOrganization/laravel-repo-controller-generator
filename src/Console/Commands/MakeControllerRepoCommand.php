@@ -63,7 +63,7 @@ class MakeControllerRepoCommand extends Command
     {
         $missing = [];
 
-        if (! file_exists(base_path('stubs/request.stub'))) {
+        if (! file_exists(base_path('stubs/request.repo.stub'))) {
             $missing[] = 'stubs/request.stub';
         }
 
@@ -75,7 +75,7 @@ class MakeControllerRepoCommand extends Command
             $missing[] = 'stubs/repository.stub';
         }
 
-        if (! file_exists(base_path('stubs/resource.stub'))) {
+        if (! file_exists(base_path('stubs/resource.repo.stub'))) {
             $missing[] = 'stubs/repository.stub';
         }
 
