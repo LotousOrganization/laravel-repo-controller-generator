@@ -3,13 +3,14 @@
 namespace {{ namespace }};
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\{{ model }}\{{ model }}Resource;
+use App\Http\Resources\{{ model }}\Admin{{ model }}Resource;
 use App\Models\{{ model }};
 use Illuminate\Http\Request;
 use App\Responses\ApiResponse;
 use App\Repositories\Eloquent\{{ model }}Repository;
 use App\Http\Requests\{{ path }}{{ model }}\Store{{ model }}Request;
 use App\Http\Requests\{{ path }}{{ model }}\Update{{ model }}Request;
+use SobhanAali\LaravelRepoControllerGenerator\Helper\Resources\Collection;
 
 class {{ controller }} extends Controller
 {
@@ -22,7 +23,7 @@ class {{ controller }} extends Controller
     {
         ${{ modelVariable }}s = $this->repo->getAll($request);
 
-        return ApiResponse::success({{ model }}Resource::collection(${{ modelVariable }}s));
+        return ApiResponse::success(new Collection(${{ modelVariable }}s , '${{ modelVariable }}' , 'Admin{{ model }}Resource'));
     }
 
     /**
@@ -40,7 +41,7 @@ class {{ controller }} extends Controller
      */
     public function show({{ model }} ${{ modelVariable }})
     {
-        return ApiResponse::success(new {{ model }}Resource(${{ modelVariable }}));
+        return ApiResponse::success(new Admin{{ model }}Resource(${{ modelVariable }}));
     }
 
     /**
