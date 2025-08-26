@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class {{ class }} extends JsonResource
 {
+    use {{ trait }};
     /**
      * Transform the resource into an array.
      *
@@ -14,6 +15,6 @@ class {{ class }} extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return {{ output }}
+        return $this->{{ model }}();
     }
 }

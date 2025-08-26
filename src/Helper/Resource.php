@@ -20,6 +20,8 @@ class Resource extends File
         }
         ConsoleMessager::line('');
 
+        self::createResourceTrait($model);
+
         $stub = file_get_contents(base_path('stubs/resource.repo.stub'));
 
         $responsePaths = [
@@ -34,7 +36,8 @@ class Resource extends File
             $replacements = [
                 '{{ namespace }}'     => $namespace,
                 '{{ class }}'         => $key === 'Admin' ? 'Admin'.$model.'Resource' : $model.'Resource',
-                '{{ output }}'        => self::getResourceOutputString($model)
+                '{{ model }}'         => $model,
+                '{{ trait }}'         => "{$model}ResourceTrait"
             ];
 
             $output = str_replace(array_keys($replacements), array_values($replacements), $stub);
@@ -90,4 +93,42 @@ class Resource extends File
 
         return $outputString;
     }
+
+    public static function createResourceTrait($model)
+    {
+        $namespace = "App\\Http\\Resources\\{$model}";
+        $traitStub = file_get_contents(dirname(__DIR__).'/internal-stubs/resource-trait.stub');
+
+        $replacements = [
+            '{{ namespace }}'     => $namespace,
+            '{{ trait-name }}'    => "{$model}ResourceTrait",
+            '{{ output }}'        => self::getResourceOutputString($model),
+            '{{ model }}'         => $model
+        ];
+
+        $output = str_replace(array_keys($replacements), array_values($replacements), $traitStub);
+
+        $path = app_path("Http/Resources/{$model}/{$model}ResourceTrait.php");
+        $directory = dirname($path);
+
+        if (!is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        $pathWithoutBase = self::pathWithoutBase($path);
+
+        if (file_exists($path)) {
+            if (! ConsoleMessager::confirm("⚠️ File already exists at: {$pathWithoutBase}. Do you want to overwrite it?", false)) {
+                ConsoleMessager::warn("⚠️ Skipped trait creation: {$pathWithoutBase}");
+                ConsoleMessager::line('');
+                return;
+            }
+        }
+
+        file_put_contents($path, $output);
+
+        ConsoleMessager::info("✔️ Resource Trait successfully created: {$pathWithoutBase}");
+        ConsoleMessager::line('');
+    }
+
 }
