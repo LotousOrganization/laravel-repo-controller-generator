@@ -1,44 +1,50 @@
 <?php
 
-namespace SobhanAali\LaravelRepoControllerGenerator\Helper\Resources;
+namespace SobhanAali\LaravelRepoControllerGenerator\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection as BaseCollection;
 
 class Collection extends ResourceCollection
 {
     public function __construct(
-        $resource ,
+        $resource,
         protected string $keyName,
         protected string $resourceClass
     ) {
-      
-        parent::__construct($resource);
+        // اگر null بود => collection خالی بساز
+        if (is_null($resource)) {
+            $resource = collect([]);
+        }
 
+        parent::__construct($resource);
     }
+
     /**
      * Transform the resource collection into an array.
      *
      * @return array<int|string, mixed>
      */
-    public function toArray($request)
+    public function toArray($request): array
     {
         return [
             $this->keyName.'s' => call_user_func(
-                    ["App\\Http\\Resources\\". ucfirst($this->keyName) . '\\' . $this->resourceClass, 'collection'], 
-                    $this->collection
-                ),
+                ["App\\Http\\Resources\\" . ucfirst($this->keyName) . '\\' . $this->resourceClass, 'collection'], 
+                $this->collection
+            ),
             'meta'  => [
-                'current_page' => $this->currentPage(),
-                'last_page'    => $this->lastPage(),
-                'per_page'     => $this->perPage(),
-                'total'        => $this->total(),
+                'current_page' => method_exists($this->resource, 'currentPage') ? $this->currentPage() : 1,
+                'last_page'    => method_exists($this->resource, 'lastPage') ? $this->lastPage() : 1,
+                'per_page'     => method_exists($this->resource, 'perPage') ? $this->perPage() : 0,
+                'total'        => method_exists($this->resource, 'total') ? $this->total() : $this->collection->count(),
             ],
             'links' => [
-                'first'        => $this->url(1),
-                'last'         => $this->url($this->lastPage()),
-                'next'         => $this->nextPageUrl(),
-                'prev'         => $this->previousPageUrl(),
+                'first'        => method_exists($this->resource, 'url') ? $this->url(1) : null,
+                'last'         => method_exists($this->resource, 'url') ? $this->url($this->lastPage()) : null,
+                'next'         => method_exists($this->resource, 'nextPageUrl') ? $this->nextPageUrl() : null,
+                'prev'         => method_exists($this->resource, 'previousPageUrl') ? $this->previousPageUrl() : null,
             ],
         ];
     }
