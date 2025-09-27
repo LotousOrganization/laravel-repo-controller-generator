@@ -7,23 +7,23 @@ use App\Http\Resources\{{ model }}\Admin{{ model }}Resource;
 use App\Models\{{ model }};
 use Illuminate\Http\Request;
 use App\Responses\ApiResponse;
-use App\Repositories\Eloquent\{{ model }}Repository;
+use App\Repositories\Contracts\{{ model }}RepositoryInterface;
 use App\Http\Requests\{{ path }}{{ model }}\Store{{ model }}Request;
 use App\Http\Requests\{{ path }}{{ model }}\Update{{ model }}Request;
 use SobhanAali\LaravelRepoControllerGenerator\Helper\Resources\Collection;
 
 class {{ controller }} extends Controller
 {
-    public function __construct(public {{ model }}Repository $repo){}
+    public function __construct(public {{ model }}RepositoryInterface $repo){}
 
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        ${{ modelVariable }}s = $this->repo->getAll($request);
+        ${{ modelVariable }}s = $this->repo->all($request);
 
-        return ApiResponse::success(new Collection(${{ modelVariable }}s , '${{ modelVariable }}' , 'Admin{{ model }}Resource'));
+        return ApiResponse::success(new Collection(${{ modelVariable }}s , '{{ modelVariable }}' , 'Admin{{ model }}Resource'));
     }
 
     /**

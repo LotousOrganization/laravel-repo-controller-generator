@@ -1,0 +1,12 @@
+<?php
+
+namespace App\Repositories\Contracts;
+
+use App\Models\{{ modelBasename }};
+
+use  SobhanAali\LaravelRepoControllerGenerator\BaseClass\BaseRepositoryInterface;
+
+interface {{ interface }} extends BaseRepositoryInterface
+{
+    // define your methods here
+}

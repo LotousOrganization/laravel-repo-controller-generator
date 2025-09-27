@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use SobhanAali\LaravelRepoControllerGenerator\Console\ConsoleMessager;
 use SobhanAali\LaravelRepoControllerGenerator\Helper\Controller;
 use SobhanAali\LaravelRepoControllerGenerator\Helper\Repository;
+use SobhanAali\LaravelRepoControllerGenerator\Helper\RepositoryInterface;
 use SobhanAali\LaravelRepoControllerGenerator\Helper\Request;
 use SobhanAali\LaravelRepoControllerGenerator\Helper\Resource;
 
@@ -53,6 +54,7 @@ class MakeControllerRepoCommand extends Command
             Resource::create($model);
         }
 
+        RepositoryInterface::create($model);
         Repository::create($model);
         
         Controller::create($className , $model , $basePath.$path , $path);

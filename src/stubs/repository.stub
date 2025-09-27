@@ -6,7 +6,7 @@ use App\Models\{{ modelBasename }};
 
 class {{ class }}
 {
-    public function getAll($request)
+    public function all($request)
     {
         ${{ modelVariable }}s = {{ modelBasename }}::all();
 
