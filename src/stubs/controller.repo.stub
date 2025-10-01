@@ -10,7 +10,7 @@ use App\Responses\ApiResponse;
 use App\Repositories\Contracts\{{ model }}RepositoryInterface;
 use App\Http\Requests\{{ path }}{{ model }}\Store{{ model }}Request;
 use App\Http\Requests\{{ path }}{{ model }}\Update{{ model }}Request;
-use SobhanAali\LaravelRepoControllerGenerator\Helper\Resources\Collection;
+use SobhanAali\LaravelRepoControllerGenerator\Resources\Collection;
 
 class {{ controller }} extends Controller
 {

@@ -6,9 +6,9 @@ interface BaseRepositoryInterface
 {
     public function all();
 
-    public function create(array $data);
+    public function create($data);
 
-    public function update($id, array $data);
+    public function update($object,$data);
 
-    public function delete($id);
+    public function delete($object);
 }
