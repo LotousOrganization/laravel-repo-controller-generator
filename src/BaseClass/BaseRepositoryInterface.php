@@ -2,13 +2,16 @@
 
 namespace SobhanAali\LaravelRepoControllerGenerator\BaseClass;
 
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Database\Eloquent\Model;
+
 interface BaseRepositoryInterface
 {
-    public function all();
+    public function all(FormRequest $request);
 
-    public function create($data);
+    public function create(FormRequest $request);
 
-    public function update($object,$data);
+    public function update(FormRequest $request ,  Model $object);
 
-    public function delete($object);
+    public function delete(Model $object);
 }
