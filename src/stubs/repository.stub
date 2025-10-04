@@ -21,14 +21,14 @@ class {{ class }} implements {{ class }}Interface
         return;
     }
 
-    public function update($request , {{ modelBasename }} ${{ modelVariable }}) : void
+    public function update($request , ${{ modelVariable }}) : void
     {
         ${{ modelVariable }}->update($request->validated());
 
         return;
     }
 
-    public function delete({{ modelBasename }} ${{ modelVariable }}) : void
+    public function delete(${{ modelVariable }}) : void
     {
         ${{ modelVariable }}->delete();
 
