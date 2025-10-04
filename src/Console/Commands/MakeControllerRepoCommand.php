@@ -9,6 +9,7 @@ use SobhanAali\LaravelRepoControllerGenerator\Helper\Controller;
 use SobhanAali\LaravelRepoControllerGenerator\Helper\Repository;
 use SobhanAali\LaravelRepoControllerGenerator\Helper\RepositoryInterface;
 use SobhanAali\LaravelRepoControllerGenerator\Helper\Request;
+use SobhanAali\LaravelRepoControllerGenerator\Helper\RequestList;
 use SobhanAali\LaravelRepoControllerGenerator\Helper\Resource;
 
 class MakeControllerRepoCommand extends Command
@@ -51,6 +52,7 @@ class MakeControllerRepoCommand extends Command
             $this->error("❌\u{200A}Model '{$model}' not found at {$modelClass}. Request classes cannot be generated without the model.");
         } else {
             Request::create($path , $model);
+            RequestList::create($model);
             Resource::create($model);
         }
 
